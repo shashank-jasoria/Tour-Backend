@@ -1,21 +1,8 @@
 const Users = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require('./../utils/apiError');
+const factory = require('./handleFactory');
 
-exports.getAllUsers = catchAsync(async (req , res , next)=>{
-
-    const users = await Users.find();
-    res.status(200).json({
-        status:'success',
-        requestedAt : req.requestTime,
-        result:users.length,
-        data:{
-            users
-        }
-    })
-
-    
-});
 
 function filterObject(obj , ...allowedFields){
     const newObj = {};
@@ -48,25 +35,20 @@ exports.updateMe = catchAsync( async (req , res , next) =>{
     })
 })
 
-exports.getUser = (req , res)=>{
-    res.status(500).json({
-        status:'error',
-        Message:'this url is not yet defined'
-    })
-};
-exports.updateUser = (req , res)=>{
-    res.status(500).json({
-        status:'error',
-        Message:'this url is not yet defined'
-    })
-};
 
-exports.deleteUser = (req , res)=>{
-    res.status(500).json({
-        status:'error',
-        Message:'this url is not yet defined'
-    })
-};
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  await Users.findByIdAndUpdate(req.user.id, { active: false });
+
+  res.status(204).json({
+    status: 'success',
+    data: null
+  });
+});
+
+exports.getUser = factory.getOne(Users);
+exports.getAllUsers = factory.getAll(Users);
+exports.updateUser = factory.updateOne(Users);
+exports.deleteUser = factory.deleteOne(Users)
 
 exports.createUser = (req , res)=>{
     res.status(500).json({
