@@ -15,6 +15,12 @@ function filterObject(obj , ...allowedFields){
     return newObj;
 }
 
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user._id;
+  next();
+};
+
+
 exports.updateMe = catchAsync( async (req , res , next) =>{
     
     if (req.body.password || req.body.passwordConfirm) {
