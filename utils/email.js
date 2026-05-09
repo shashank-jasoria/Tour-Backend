@@ -1,26 +1,86 @@
 const nodemailer = require('nodemailer');
+const pug = require('pug');
+const htmlToText = require('html-to-text');
 
+module.exports = class Email{
 
-const sendEmail = async options =>{
-    const transporter = nodemailer.createTransport({
-        port:process.env.EMAIL_PORT,
-        host:process.env.EMAIL_HOST,
-        auth:{
-            user:process.env.EMAIL_USERNAME,
-            pass:process.env.EMAIL_PASSWORD,
-        }
-    })
-
-
-    const mailOptions = {
-        from: 'SJ@gmail.com',
-        to: options.email,
-        subject: options.subject,
-        text: options.message,
-        // html
+    constructor(user , url){
+        this.to = user.email;
+        this.firstName = user.name.split(' ')[0];
+        this.url = url;
+        this.from = `Shashank Jasoria <${process.env.EMAIL_FROM}>`
     }
-    await transporter.sendMail(mailOptions)
+
+    newTransPort(){
+        if(process.env.NODE_ENV == 'production'){
+
+            return 1
+        }
+
+        return nodemailer.createTransport({
+            port:process.env.EMAIL_PORT,
+            host:process.env.EMAIL_HOST,
+            auth:{
+                user:process.env.EMAIL_USERNAME,
+                pass:process.env.EMAIL_PASSWORD,
+            }
+        })
+    }
+
+
+    async send(template , subject){
+
+
+        const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
+            firstName: this.firstName,
+            url: this.url,
+            subject
+        });
+        
+        const mailOptions = {
+            from: this.from,
+            to: this.to,
+            subject,
+            html,
+            text: htmlToText.convert(html)
+        };
+        await this.newTransPort().sendMail(mailOptions)
+    }
+
+    async sendWelcome(){
+        await this.send('welcome' , 'welcome to Tours family !!')
+    }
+
+    async sendPasswordReset() {
+        await this.send(
+            'passwordReset',
+            'Your password reset token (valid for only 10 minutes)'
+        );
+    }
 
 }
 
-module.exports = sendEmail;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const sendEmail = async options =>{
+    
+
+
+
+
+}
+
+// module.exports = sendEmail;

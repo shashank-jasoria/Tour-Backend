@@ -1,5 +1,5 @@
 const express = require('express');
-const {getAllTours , createTour , getTour ,getDistances , updateTour , deleteTour , checkId , checkBody , aliasTopTours , tourStats ,getMonthlyPlan , getToursWithin} = require('./../controller/tourController');
+const {getAllTours , createTour , getTour ,getDistances , uploadUserPhoto , resizeTourImages , updateTour , deleteTour , checkId , checkBody , aliasTopTours , tourStats ,getMonthlyPlan , getToursWithin} = require('./../controller/tourController');
 const {Protect , restrictTo} = require('./../controller/authController');
 const {createReview } = require('./../controller/reviewController');
 const reviewRouter = require('./reviewRoutes');
@@ -11,7 +11,7 @@ router.route('/top-stats').get(tourStats)
 router.route('/top-5-cheap').get(aliasTopTours , getAllTours)
 router.route('/monthly-plan/:year').get(Protect, restrictTo('admin', 'lead-guide', 'guide') , getMonthlyPlan);
 router.route('/').get(getAllTours).post(Protect,restrictTo('admin', 'lead-guide') ,createTour);
-router.route('/:id').get(getTour).patch(updateTour).delete(Protect , restrictTo('admin', 'lead-guide') ,deleteTour);
+router.route('/:id').get(getTour).patch(Protect,restrictTo('admin', 'lead-guide') , uploadUserPhoto , resizeTourImages , updateTour).delete(Protect , restrictTo('admin', 'lead-guide') ,deleteTour);
 router
   .route('/tours-within/:distance/center/:latlng/unit/:unit')
   .get(getToursWithin);
