@@ -1,6 +1,8 @@
 # dependencies
 node_modules/
 
+
+public/js/mapbox.js
 public/js/bundle.js
 public/js/bundle.js.map
 .cache/
