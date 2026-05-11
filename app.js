@@ -17,7 +17,7 @@ const hpp = require('hpp');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 
-
+app.set('trust proxy', 1);
 app.set('view engine' , 'pug');
 app.set('views' , path.join(__dirname , 'views'));
 // app.use(express.static(`${__dirname}/public`));

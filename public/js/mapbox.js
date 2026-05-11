@@ -5,9 +5,9 @@
 
 // console.log('locations' , locations)
 
-export const displayMap = locations => {
+export const displayMap = (locations, mapToken) => {
   // sets the access token, associating the map with your Mapbox account and its permissions
-  mapboxgl.accessToken = '';
+  mapboxgl.accessToken = `${mapToken}`;
 
   // creates the map, setting the container to the id of the div you added in step 2, and setting the initial center and zoom level of the map
   const map = new mapboxgl.Map({
